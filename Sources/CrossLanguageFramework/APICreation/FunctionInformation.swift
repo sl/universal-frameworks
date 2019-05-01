@@ -8,7 +8,7 @@ public struct FunctionInformation {
   fileprivate init(
     inputs: [String],
     output: String?,
-    typeErasedFunction: @escaping ([Any]) -> Any?
+    typeErasedFunction: @escaping ([Any]) -> Any
   ) {
     self.inputs = inputs
     self.output = output
@@ -19,65 +19,65 @@ public struct FunctionInformation {
 // Possible way of handling function calls:
 // we wrap closures we're given in closures of the same type
 
-private func describe<X>(_ type: X.Type) -> String {
+private func describeInputs<X>(_ type: X.Type) -> String {
+  let description = String(describing: X.self)
+  if description.first == "(" && description.last == ")" {
+    return String(description.dropFirst().dropLast())
+  }
+  return description
+}
+
+private func describeOutput<X>(_ type: X.Type) -> String {
   return String(describing: X.self)
 }
 
-public func deduceFunctionInformation(
+public func functionInformation(
   for f: @escaping () -> Void
 ) -> FunctionInformation {
-  print("input: <NONE>")
-  print("output: <NONE>")
   return FunctionInformation(
     inputs: [],
     output: nil
   ) { 
-    (inputs: [Any]) -> Any? in 
+    (inputs: [Any]) -> Any in 
     f()
-    return nil
+    return ()
   }
 }
 
-public func deduceFunctionInformation<Input>(
+public func functionInformation<Input>(
   for f: @escaping (Input) -> Void
 ) -> FunctionInformation {
-  print("input:", Input.self)
-  print("output: <NONE>")
   return FunctionInformation(
-    inputs: [describe(Input.self)],
+    inputs: tokenize(inputSignature: describeInputs(Input.self)),
     output: nil
   ) {
-    (inputs: [Any]) -> Any? in
+    (inputs: [Any]) -> Any in
     let args = inputs.tuple as! Input
     f(args)
-    return nil
+    return ()
   }
 }
 
-public func deduceFunctionInformation<Ret>(
+public func functionInformation<Ret>(
   for f: @escaping () -> Ret
 ) -> FunctionInformation {
-  print("input: <NONE>")
-  print("output:", Ret.self)
   return FunctionInformation(
     inputs: [],
-    output: describe(Ret.self)
+    output: describeOutput(Ret.self)
   ) { 
-    (inputs: [Any]) -> Any? in 
+    (inputs: [Any]) -> Any in 
     return f()
   }
 }
 
-public func deduceFunctionInformation<Input, Ret>(
+public func functionInformation<Input, Ret>(
   for f: @escaping (Input) -> Ret
 ) -> FunctionInformation {
-  print("input:", Input.self)
-  print("output:", Ret.self)
   return FunctionInformation(
-    inputs: [describe(Input.self)],
-    output: describe(Ret.self)
+    inputs: tokenize(inputSignature: describeInputs(Input.self)),
+    output: describeOutput(Ret.self)
   ) { 
-    (inputs: [Any]) -> Any? in
+    (inputs: [Any]) -> Any in
     let args = inputs.tuple as! Input
     return f(args)
   }
