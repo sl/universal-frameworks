@@ -1,5 +1,9 @@
 /// Split a function's input signature into a list of the name of its argument
 /// types.
+///
+/// Example:
+/// (Int, String, (Float, Bool) -> MyType, Test) =>
+/// ["Int", "String", "(Float, Bool) -> MyType", "Test"]
 func tokenize(inputSignature signature: String) -> [String] {
   var result: [String] = []
   var accumulated = ""
