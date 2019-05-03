@@ -4,6 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
   return [
     testCase(CrossLanguageFrameworkTests.allTests),
+    testCase(FunctionalInformationTests.allTests)
   ]
 }
 #endif
