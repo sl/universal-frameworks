@@ -49,7 +49,7 @@ public struct FunctionInformation {
     }
   }
   
-  init<Ret>(
+  /*init<Ret>(
     for f: @escaping () -> Ret,
     withName name: String
   ) {
@@ -61,7 +61,7 @@ public struct FunctionInformation {
       (inputs: [Any]) -> Any in 
       return f()
     }
-  }
+  }*/
   
   init<Input, Ret>(
     for f: @escaping (Input) -> Ret,
